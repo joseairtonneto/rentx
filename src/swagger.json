@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Rentalx Documentation",
+    "title": "RentX Documentation",
     "description": "This is an API Rent",
     "version": "1.0.0",
     "contact": {
@@ -13,20 +13,11 @@
       "post": {
         "tags": ["Category"],
         "summary": "Create a category",
-        "description": "Create a new category",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string"
-                  },
-                  "description": {
-                    "type": "string"
-                  }
-                },
+                "$ref": "#/definitions/Category",
                 "example": {
                   "name": "Category name sample",
                   "description": "Category description sample"
@@ -37,17 +28,34 @@
         },
         "responses": {
           "201": {
-            "description": "Category created successfully"
+            "description": "Category created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "message": "Category created successfully"
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "description": "Category already exists"
+            "description": "Category already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "error": "Category already exists"
+                  }
+                }
+              }
+            }
           }
         }
       },
       "get": {
         "tags": ["Category"],
         "summary": "Get all categories",
-        "description": "Get all categories",
         "responses": {
           "200": {
             "description": "Categories list",
@@ -72,11 +80,126 @@
                         "format": "date-time"
                       }
                     }
+                  },
+                  "example": [
+                    {
+                      "id": "c8f658cd-d9b6-4633-8acc-86cfca84f5ad",
+                      "name": "SUV",
+                      "description": "Carros SUV",
+                      "created_at": "2021-08-17T03:08:48.321Z"
+                    },
+                    {
+                      "id": "3b531ad2-5b61-41c3-84ee-bc4bd77c5824",
+                      "name": "Sedan",
+                      "description": "Automóvel de três volumes",
+                      "created_at": "2021-08-17T03:18:16.298Z"
+                    },
+                    {
+                      "id": "a048cf1e-9e9e-4758-a352-c82a2bb5dea1",
+                      "name": "Hatch",
+                      "description": "Carro curto",
+                      "created_at": "2021-08-17T03:18:16.308Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/import": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Import categories",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
                   }
                 }
               }
             }
           }
+        },
+        "responses": {
+          "201": {
+            "description": "Categories imported successfully"
+          }
+        }
+      }
+    },
+    "/specifications": {
+      "post": {
+        "tags": ["Specifications"],
+        "summary": "Create a specification",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Specification",
+                "example": {
+                  "name": "Specification name sample",
+                  "description": "Specification description sample"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Specification created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "message": "Specification created successfully"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Specification already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "error": "Specification already exists"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Category": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "Specification": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
         }
       }
     }
