@@ -11,15 +11,11 @@ class CreateSpecificationController {
       CreateSpecificationUseCase
     );
 
-    try {
-      await createSpecificationUseCase.execute({ name, description });
+    await createSpecificationUseCase.execute({ name, description });
 
-      return response
-        .status(201)
-        .json({ message: "Specification created successfully" });
-    } catch (error) {
-      return response.status(400).json({ message: error.message });
-    }
+    return response
+      .status(201)
+      .json({ message: "Specification created successfully" });
   }
 }
 
