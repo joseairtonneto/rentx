@@ -55,10 +55,6 @@ class Car {
   })
   specifications: Specification[];
 
-  @ManyToOne(() => CarImage, (image) => image)
-  @JoinColumn({ name: "images_id" })
-  images: CarImage[];
-
   @CreateDateColumn()
   created_at: Date;
 
