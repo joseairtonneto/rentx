@@ -30,7 +30,7 @@ describe("Create category", () => {
     expect(result).toHaveProperty("id");
   });
 
-  it("should not be able to create an existing category", async () => {
+  it("should not be able to create a new category with the same data as an existing category", async () => {
     expect(async () => {
       const category = {
         name: "Category Test",

@@ -14,7 +14,7 @@ class AuthenticateUserController {
       password,
     });
 
-    return response.status(200).json({ message: "Login", token });
+    return response.status(200).json(token);
   }
 }
 
