@@ -13,6 +13,12 @@
       "post": {
         "tags": ["Category"],
         "summary": "Create a category",
+        "description": "Create a new category",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -112,6 +118,12 @@
       "post": {
         "tags": ["Category"],
         "summary": "Import categories",
+        "description": "Import categories",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -138,6 +150,12 @@
       "post": {
         "tags": ["Specifications"],
         "summary": "Create a specification",
+        "description": "Create a new specification",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -178,6 +196,201 @@
           }
         }
       }
+    },
+    "/sessions": {
+      "post": {
+        "tags": ["Session"],
+        "summary": "Authentication user",
+        "description": "Authentication user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Email or password incorrect!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "error": "Email or password incorrect!"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cars": {
+      "post": {
+        "tags": ["Cars"],
+        "summary": "Create a car",
+        "description": "Create a new car",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Car",
+                "example": {
+                  "name": "Car name sample",
+                  "description": "Car description sample",
+                  "daily_rate": "100",
+                  "license_plate": "ABC-1234",
+                  "fine_amount": "10",
+                  "brand": "Brand sample",
+                  "category_id": "c8f658cd-d9b6-4633-8acc-86cfca84f5ad"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Car created successfully"
+          },
+          "400": {
+            "description": "Car already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "error": "Car already exists!"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cars/images/{id}": {
+      "post": {
+        "tags": ["Cars"],
+        "summary": "Upload car image",
+        "description": "Upload car image",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Car ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Car image uploaded successfully"
+          }
+        }
+      }
+    },
+    "/cars/available": {
+      "get": {
+        "tags": ["Cars"],
+        "summary": "Get all available cars",
+        "responses": {
+          "200": {
+            "description": "Cars list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "ref": "#/definitions/Car"
+                  },
+                  "example": [
+                    {
+                      "id": "c8f658cd-d9b6-4633-8acc-86cfca84f5ad",
+                      "name": "SUV",
+                      "description": "Carros SUV",
+                      "daily_rate": "100",
+                      "available": true,
+                      "license_plate": "ABC-1234",
+                      "fine_amount": "10",
+                      "brand": "Honda",
+                      "category": {
+                        "id": "c8f658cd-d9b6-4633-8acc-86cfca84f5ad",
+                        "name": "SUV",
+                        "description": "Carros SUV",
+                        "created_at": "2021-08-17T"
+                      },
+                      "specifications": [
+                        {
+                          "id": "c8f658cd-d9b6-4633-8acc-86cfca84f5ad",
+                          "name": "SUV",
+                          "description": "Carros SUV",
+                          "created_at": "2021-08-17T"
+                        }
+                      ],
+                      "created_at": "2021-08-17T03:08:48.321Z"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -201,6 +414,41 @@
         "description": {
           "type": "string"
         }
+      }
+    },
+    "Car": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "daily_rate": {
+          "type": "number"
+        },
+        "license_plate": {
+          "type": "string"
+        },
+        "fine_amount": {
+          "type": "number"
+        },
+        "brand": {
+          "type": "string"
+        },
+        "category_id": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

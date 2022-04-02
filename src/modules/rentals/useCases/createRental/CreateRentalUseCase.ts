@@ -1,5 +1,6 @@
 import { inject, injectable } from "tsyringe";
 
+import { ICarsRepository } from "@modules/cars/repositories/ICarsRepository";
 import { Rental } from "@modules/rentals/infra/typeorm/entities/Rental";
 import { IRentalsRepository } from "@modules/rentals/repositories/IRentalsRepository";
 import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
@@ -18,7 +19,10 @@ class CreateRentalUseCase {
     private rentalsRepository: IRentalsRepository,
 
     @inject("DayjsDateProvider")
-    private dateProvider: IDateProvider
+    private dateProvider: IDateProvider,
+
+    @inject("CarsRepository")
+    private carsRepository: ICarsRepository
   ) {}
 
   async execute({
@@ -31,7 +35,7 @@ class CreateRentalUseCase {
     const rentedCar = await this.rentalsRepository.findOpenRentalByCar(car_id);
 
     if (rentedCar) {
-      throw new AppError("Car already rented");
+      throw new AppError("Car already rented!");
     }
 
     const openRentUser = await this.rentalsRepository.findOpenRentalByUser(
@@ -50,7 +54,7 @@ class CreateRentalUseCase {
     );
 
     if (compareDates < minimumReturnDate) {
-      throw new AppError("Expected return date must be at least 24 hours");
+      throw new AppError("Expected return date must be at least 24 hours!");
     }
 
     const rental = await this.rentalsRepository.create({
@@ -58,6 +62,8 @@ class CreateRentalUseCase {
       user_id,
       expected_return_date,
     });
+
+    await this.carsRepository.updateAvailable(car_id, false);
 
     return rental;
   }
