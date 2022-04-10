@@ -63,7 +63,7 @@ class AuthenticateUserUseCase {
       expiresIn: expires_in_refresh_token,
     });
 
-    const refresh_token_expires_date = this.dateProvider.addDays(
+    const refresh_token_expires_date = await this.dateProvider.addDays(
       expires_refresh_token_days
     );
 
