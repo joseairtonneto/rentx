@@ -21,6 +21,12 @@ class CarsImagesRepository implements ICarsImagesRepository {
 
     return carImage;
   }
+
+  findByCarId(car_id: string): Promise<CarImage[]> {
+    const images = this.repository.find({ car_id });
+
+    return images;
+  }
 }
 
 export { CarsImagesRepository };
